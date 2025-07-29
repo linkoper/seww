@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koperi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loading-overlay">Cargando...</div>
+
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <h2>Iniciar Sesión</h2>
+            <input type="email" id="login-email" placeholder="Correo electrónico">
+            <input type="password" id="login-password" placeholder="Contraseña">
+            <button id="login-btn" class="btn">Iniciar Sesión</button>
+            <button id="register-btn" class="btn">Registrarse</button>
+            <p id="login-error" class="error"></p>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Configura tu Perfil</h2>
+            <input type="text" id="modal-display-name" placeholder="Nombre de usuario">
+            <input type="password" id="modal-password" placeholder="Nueva contraseña (opcional)">
+            <textarea id="modal-bio" placeholder="Biografía"></textarea>
+            <input type="file" id="modal-profile-pic-input" accept="image/*" onchange="validateFile(this)">
+            <button id="modal-save-profile" class="btn">Guardar</button>
+            <button id="modal-cancel-profile" class="btn btn-cancel">Cancelar</button>
+            <button id="modal-delete-account" class="btn btn-cancel">Eliminar Cuenta</button>
+            <p id="modal-error" class="error"></p>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <h1>Koperi</h1>
+            <div id="notification-icon-container">
+                <div id="notification-icon"></div>
+                <div id="notification-badge"></div>
+            </div>
+            <button id="theme-toggle" class="btn"></button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="profile-section">
+            <div id="profile-header">
+                <img id="profile-pic" src="https://via.placeholder.com/40" alt="Foto de Perfil">
+                <div>
+                    <p id="profile-name">Nombre de Usuario</p>
+                    <p id="profile-bio">Biografía</p>
+                </div>
+            </div>
+            <div id="profile-stats">
+                <p id="follower-count">Seguidores: 0</p>
+                <p id="post-count">Publicaciones: 0</p>
+            </div>
+            <div id="menu-options">
+                <button id="edit-profile" class="btn"><i data-lucide="pencil" class="icon"></i> Editar Perfil</button>
+                <button id="view-followers" class="btn"><i data-lucide="users" class="icon"></i> Ver Seguidores</button>
+                <button id="view-stats" class="btn"><i data-lucide="bar-chart-2" class="icon"></i> Estadísticas</button>
+                <button id="saved-posts-btn" class="btn"><i data-lucide="bookmark" class="icon"></i> Publicaciones Guardadas</button>
+                <button id="messages-btn" class="btn"><i data-lucide="message-square" class="icon"></i> Mensajes</button>
+                <button id="logout-btn" class="btn btn-cancel"><i data-lucide="log-out" class="icon"></i> Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div id="forum-section">
+            <div id="section-toggle">
+                <button id="show-posts" class="active">Publicaciones</button>
+                <button id="show-videos">Videos</button>
+                <button id="show-followers">Seguidores</button>
+                <button id="show-explore">Explorar</button>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Buscar...">
+            </div>
+            <button id="toggle-post-form" class="btn">+</button>
+            <form id="post-form">
+                <textarea id="post-content" placeholder="¿Qué estás pensando?"></textarea>
+                <div class="file-input-wrapper">
+                    <label for="post-image" class="file-input-label"><div class="icon-add-photo"></div></label>
+                    <input type="file" id="post-image" accept="image/*" onchange="validateFile(this)">
+                    <label for="post-video" class="file-input-label"><div class="icon-add-video"></div></label>
+                    <input type="file" id="post-video" accept="video/*" onchange="validateFile(this)">
+                </div>
+                <progress id="upload-progress" value="0" max="100" style="display: none;"></progress>
+                <button type="button" id="submit-post" class="btn">Publicar</button>
+                <button type="button" id="cancel-post" class="btn btn-cancel">Cancelar</button>
+            </form>
+            <div id="posts"></div>
+            <div id="videos" style="display: none;"></div>
+            <div id="followers" style="display: none;"></div>
+            <div id="explore" style="display: none;"></div>
+        </div>
+
+        <div id="stats-section" style="display: none;">
+            <h2>Estadísticas</h2>
+            <canvas id="stats-chart"></canvas>
+            <button id="back-to-home-stats" class="btn">Volver</button>
+        </div>
+
+        <div id="saved-posts-section" style="display: none;">
+            <h2>Publicaciones Guardadas</h2>
+            <div id="saved-posts"></div>
+            <button id="back-to-home-saved" class="btn">Volver</button>
+        </div>
+
+        <div id="user-profile-section" style="display: none;">
+            <div id="user-profile-content">
+                <img class="profile-pic" src="" alt="Foto de Perfil">
+            </div>
+            <button id="back-to-home-profile" class="btn">Volver</button>
+            <button id="go-back-profile" class="btn">Atrás</button>
+        </div>
+
+        <div id="messages-section" style="display: none;">
+            <div id="conversations-list"></div>
+            <div id="chat-container">
+                <div id="chat-header"></div>
+                <div id="chat-messages"></div>
+                <div id="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+                    <button id="send-message-btn" class="btn">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <div id="likes-modal" class="modal">
+        <div class="modal-content">
+            <h2>Me gusta</h2>
+            <div id="likes-list"></div>
+            <button id="close-likes-modal" class="btn">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="comments-modal" class="modal">
+        <div class="modal-content">
+            <h2>Comentarios</h2>
+            <div id="comments-list"></div>
+            <button id="close-comments-modal" class="btn">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="error"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>
